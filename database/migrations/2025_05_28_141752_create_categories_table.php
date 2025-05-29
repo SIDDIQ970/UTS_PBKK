@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-            Schema::create('categories', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->string('category_id')->primary();
             $table->string('product_id');
@@ -21,7 +21,6 @@ return new class extends Migration
 
             $table->index('product_id');
         });
-
     }
 
     /**

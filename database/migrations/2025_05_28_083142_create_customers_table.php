@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-            Schema::create('customers', function (Blueprint $table) {
+        Schema::create('customers', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->string('customer_id')->primary();
             $table->string('name');
@@ -21,7 +21,6 @@ return new class extends Migration
             $table->text('address');
             $table->timestamps();
         });
-
     }
 
     /**

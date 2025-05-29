@@ -11,7 +11,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Panggil UserSeeder agar user admin@ifump.net dibuat
+        // Panggil CustomerSeeder agar customer admin@ifump.net dibuat
         $this->call([
             CustomerSeeder::class,
         ]);

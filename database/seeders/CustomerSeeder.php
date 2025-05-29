@@ -15,11 +15,11 @@ class CustomerSeeder extends Seeder
     {
         Customer::create([
             'customer_id' => 'CUST001',
-            'name' => 'Admin',
-            'email' => 'admin@ifump.net',
-            'password' => Hash::make('password'),
-            'phone' => '0895334400261',
-            'address' => 'pontianak'
+            'name'        => 'admin',
+            'email'       => 'admin@gmail.com',
+            'password'    => Hash::make('password'),
+            'phone'       => '0895334400261',
+            'address'     => 'Pontianak'
         ]);
     }
 }
