@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
-use Pest\ArchPresets\Custom;
+
 
 class OrderController extends Controller
 {
@@ -16,16 +16,19 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'order_id' => 'required|string',
-            'customer_id' => 'required|string',
+            'order_id' => 'required|string|unique:orders,order_id',
+            'customer_id' => 'required|string|exists:customers,customer_id',
             'order_date' => 'required|date',
             'total_amount' => 'required|numeric',
             'status' => 'required|string'
         ]);
-        
-        Order::create($request->all());
 
-        return response()->json(['message' => 'Data telah berhasil ditambahkan'], 201);
+        $order = Order::create($request->all());
+
+        return response()->json([
+            'message' => 'Data telah berhasil ditambahkan',
+            'data' => $order
+        ], 201);
     }
 
     public function show($id)
@@ -38,11 +41,9 @@ class OrderController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-
+   {
         $request->validate([
-            'order_id' => 'required|string',
-            'customer_id' => 'required|string',
+            'customer_id' => 'required|string|exists:customers,customer_id',
             'order_date' => 'required|date',
             'total_amount' => 'required|numeric',
             'status' => 'required|string'
@@ -56,7 +57,10 @@ class OrderController extends Controller
 
         $order->update($request->all());
 
-        return response()->json(['message' => 'Data telah berhasil diupdate']);
+        return response()->json([
+            'message' => 'Data telah berhasil diupdate',
+            'data' => $order
+        ]);
     }
 
     public function destroy($id)

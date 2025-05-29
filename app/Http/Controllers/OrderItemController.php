@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
-use Pest\ArchPresets\Custom;
+
 
 class OrderItemController extends Controller
 {
@@ -16,57 +16,60 @@ class OrderItemController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id' => 'required|string',
-            'order_id' => 'required|string',
-            'product_id' => 'required|string',
-            'quantity' => 'required|integer',
-            'price' => 'required|integer'
+            'id' => 'required|string|unique:order_items,id',
+            'order_id' => 'required|string|exists:orders,order_id',
+            'product_id' => 'required|string|exists:products,product_id',
+            'quantity' => 'required|integer|min:1',
+            'price' => 'required|integer|min:0'
         ]);
-        
-        OrderItem::create($request->all());
 
-        return response()->json(['message' => 'Data telah berhasil ditambahkan'], 201);
+        $orderItem = OrderItem::create($request->all());
+
+        return response()->json([
+            'message' => 'Data telah berhasil ditambahkan',
+            'data' => $orderItem
+        ], 201);
     }
 
     public function show($id)
     {
-        $orderitem = OrderItem::find($id);
-        if (!$orderitem) {
+        $orderItem = OrderItem::find($id);
+        if (!$orderItem) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
-        return response()->json($orderitem, 200);
+        return response()->json($orderItem, 200);
     }
 
     public function update(Request $request, $id)
     {
-
-        $request->validate([
-            'id' => 'required|string',
-            'order_id' => 'required|string',
-            'product_id' => 'required|string',
-            'quantity' => 'required|integer',
-            'price' => 'required|integer'
-        ]);
-
-
-        $orderitem = OrderItem::find($id);
-        if (!$orderitem) {
+        $orderItem = OrderItem::find($id);
+        if (!$orderItem) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
 
-        $orderitem->update($request->all());
+        $request->validate([
+            'order_id' => 'required|string|exists:orders,order_id',
+            'product_id' => 'required|string|exists:products,product_id',
+            'quantity' => 'required|integer|min:1',
+            'price' => 'required|integer|min:0'
+        ]);
 
-        return response()->json(['message' => 'Data telah berhasil diupdate']);
+        $orderItem->update($request->all());
+
+        return response()->json([
+            'message' => 'Data telah berhasil diupdate',
+            'data' => $orderItem
+        ]);
     }
 
     public function destroy($id)
     {
-        $orderitem = OrderItem::find($id);
-        if (!$orderitem) {
+        $orderItem = OrderItem::find($id);
+        if (!$orderItem) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
 
-        $orderitem->delete();
+        $orderItem->delete();
 
         return response()->json(['message' => 'Data telah berhasil dihapus']);
     }

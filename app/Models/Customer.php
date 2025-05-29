@@ -17,7 +17,7 @@ class Customer extends Authenticatable
     protected $keyType = 'string';
 
     protected $fillable = [
-        'customer_id',      
+        'customer_id',
         'name',
         'email',
         'password',
@@ -27,4 +27,9 @@ class Customer extends Authenticatable
 
     protected $hidden = ['password'];
 
+    // Relasi ke Orders
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'customer_id', 'customer_id');
+    }
 }

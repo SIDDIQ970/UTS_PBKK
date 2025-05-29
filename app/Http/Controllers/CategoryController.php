@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Pest\ArchPresets\Custom;
 
 class CategoryController extends Controller
 {
@@ -15,16 +14,19 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'category_id' => 'required|string',
-            'product_id' => 'required|string',
+            'product_id' => 'required|string', // Tambahkan 'exists:products,product_id' jika perlu
             'name' => 'required|string',
             'description' => 'required|string'
         ]);
-        
-        Category::create($request->all());
 
-        return response()->json(['message' => 'Data telah berhasil ditambahkan'], 201);
+        $category = Category::create($validated);
+
+        return response()->json([
+            'message' => 'Data telah berhasil ditambahkan',
+            'data' => $category
+        ], 201);
     }
 
     public function show($id)
@@ -38,23 +40,24 @@ class CategoryController extends Controller
 
     public function update(Request $request, $id)
     {
-
-        $request->validate([
+        $validated = $request->validate([
             'category_id' => 'required|string',
             'product_id' => 'required|string',
             'name' => 'required|string',
             'description' => 'required|string'
         ]);
 
-
         $category = Category::find($id);
         if (!$category) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
 
-        $category->update($request->all());
+        $category->update($validated);
 
-        return response()->json(['message' => 'Data telah berhasil diupdate']);
+        return response()->json([
+            'message' => 'Data telah berhasil diupdate',
+            'data' => $category
+        ]);
     }
 
     public function destroy($id)

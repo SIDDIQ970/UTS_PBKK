@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Product extends Authenticatable
+class Product extends Model
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory;
 
     protected $table = 'products';
     protected $primaryKey = 'product_id';
@@ -17,7 +15,7 @@ class Product extends Authenticatable
     protected $keyType = 'string';
 
     protected $fillable = [
-        'product_id',      
+        'product_id',
         'name',
         'description',
         'price',
@@ -25,6 +23,9 @@ class Product extends Authenticatable
         'category_id',
     ];
 
-    protected $hidden = ['password'];
-
+    // Relasi ke kategori
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id', 'category_id');
+    }
 }

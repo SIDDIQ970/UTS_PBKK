@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class OrderItem extends Authenticatable
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+
+class OrderItem extends Model
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory;
 
     protected $table = 'order_items';
     protected $primaryKey = 'id';
@@ -17,14 +17,23 @@ class OrderItem extends Authenticatable
     protected $keyType = 'string';
 
     protected $fillable = [
-        'id',      
+        'id',
         'order_id',
         'product_id',
         'quantity',
         'price',
-        
     ];
+    
 
-    protected $hidden = ['password'];
+    // Relasi ke Order
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'order_id', 'order_id');
+    }
 
+    // Relasi ke Product
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id', 'product_id');
+    }
 }

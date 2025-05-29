@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Order extends Authenticatable
+class Order extends Model
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory;
 
     protected $table = 'orders';
     protected $primaryKey = 'order_id';
@@ -17,13 +15,16 @@ class Order extends Authenticatable
     protected $keyType = 'string';
 
     protected $fillable = [
-        'order_id',      
+        'order_id',
         'customer_id',
         'order_date',
         'total_amount',
         'status'
     ];
 
-    protected $hidden = ['password'];
-
+    // Relasi ke Customer
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id', 'customer_id');
+    }
 }

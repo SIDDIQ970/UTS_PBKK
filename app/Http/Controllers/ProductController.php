@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Pest\ArchPresets\Custom;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        return response()->json(Product::all(), 200);
+        // Menampilkan semua produk beserta kategorinya
+        $products = Product::with('category')->get();
+        return response()->json($products, 200);
     }
 
     public function store(Request $request)
@@ -23,15 +24,18 @@ class ProductController extends Controller
             'stock' => 'required|integer',
             'category_id' => 'required|string'
         ]);
-        
-        Product::create($request->all());
 
-        return response()->json(['message' => 'Data telah berhasil ditambahkan'], 201);
+        $product = Product::create($request->all());
+
+        return response()->json([
+            'message' => 'Data telah berhasil ditambahkan',
+            'data' => $product
+        ], 201);
     }
 
     public function show($id)
     {
-        $product = Product::find($id);
+        $product = Product::with('category')->find($id);
         if (!$product) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
@@ -40,7 +44,6 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-
         $request->validate([
             'product_id' => 'required|string',
             'name' => 'required|string',
@@ -50,7 +53,6 @@ class ProductController extends Controller
             'category_id' => 'required|string'
         ]);
 
-
         $product = Product::find($id);
         if (!$product) {
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
@@ -58,7 +60,10 @@ class ProductController extends Controller
 
         $product->update($request->all());
 
-        return response()->json(['message' => 'Data telah berhasil diupdate']);
+        return response()->json([
+            'message' => 'Data telah berhasil diupdate',
+            'data' => $product
+        ]);
     }
 
     public function destroy($id)

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
-use Pest\ArchPresets\Custom;
 
 class CustomerController extends Controller
 {
@@ -18,18 +17,21 @@ class CustomerController extends Controller
         $request->validate([
             'customer_id' => 'required|unique:customers,customer_id',
             'name' => 'required|string|max:50',
-            'email' => 'required|email|unique:customers',
+            'email' => 'required|email|unique:customers,email',
             'password' => 'required|min:6',
             'phone' => 'required|string',
             'address' => 'required|string'
         ]);
 
-        $request['password'] = bcrypt($request->password);
+        $data = $request->all();
+        $data['password'] = bcrypt($request->password);
 
-        
-        Customer::create($request->all());
+        $customer = Customer::create($data);
 
-        return response()->json(['message' => 'Data telah berhasil ditambahkan'], 201);
+        return response()->json([
+            'message' => 'Data telah berhasil ditambahkan',
+            'data' => $customer
+        ], 201);
     }
 
     public function show($id)
@@ -50,7 +52,10 @@ class CustomerController extends Controller
 
         $customer->update($request->all());
 
-        return response()->json(['message' => 'Data telah berhasil diupdate']);
+        return response()->json([
+            'message' => 'Data telah berhasil diupdate',
+            'data' => $customer
+        ]);
     }
 
     public function destroy($id)
